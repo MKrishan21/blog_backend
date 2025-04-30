@@ -9,13 +9,14 @@ const upload = multer({ storage });
 // Get all blogs
 router.get("/", blogController.getAllBlogs);
 
+//  Get Blogs By User-id
+router.get("/user-blogs/:userId", blogController.getBlogsByUserId);
+
 // Get blog by ID
 router.get("/:id", blogController.getBlogById);
 
-// Create new blog with image upload
 router.post("/", auth, upload.single("image"), blogController.createBlog);
 
-// Update blog with image upload
 router.put("/:id", auth, upload.single("image"), blogController.updateBlog);
 
 // Delete blog

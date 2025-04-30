@@ -25,6 +25,23 @@ exports.getBlogById = async (req, res) => {
   }
 };
 
+// Get blogs by user ID
+exports.getBlogsByUserId = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const blogs = await Blog.find({ user: userId }).sort({ createdAt: -1 });
+
+    if (!blogs || blogs.length === 0) {
+      return res.status(404).json({ message: "No blogs found for this user" });
+    }
+
+    res.status(200).json(blogs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Create new blog
 exports.createBlog = async (req, res) => {
   try {
