@@ -18,8 +18,10 @@ app.use(
 // Serve static files from uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+console.log("jsddhusdi", process.env.DB_URL);
+
 mongoose
-  .connect("mongodb://localhost:27017/blog_1", {
+  .connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
