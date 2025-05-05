@@ -3,10 +3,32 @@ const Blog = require("../models/Blog");
 // Get all blogs
 exports.getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 });
+    const { page = 1, limit = 5, sort = "desc", search = "" } = req.query;
+    const query = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { content: { $regex: search, $options: "i" } },
+      ];
+    }
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const blogs = await Blog.find()
+      .sort({
+        createdAt: sort === "asc" ? 1 : -1,
+      })
+      .skip(skip)
+      .limit(parseInt(limit));
+    const total = await Blog.countDocuments(query);
     res.status(200).json({
       success: true,
       data: blogs,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / limit),
+      },
       message: "Blogs Fetched Successfylly",
     });
   } catch (error) {
