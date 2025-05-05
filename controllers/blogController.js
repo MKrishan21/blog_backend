@@ -3,8 +3,19 @@ const Blog = require("../models/Blog");
 // Get all blogs
 exports.getAllBlogs = async (req, res) => {
   try {
-    const { page = 1, limit = 5, sort = "desc", search = "" } = req.query;
+    const {
+      page = 1,
+      limit = 5,
+      sort = "desc",
+      search = "",
+      category = "",
+    } = req.query;
     const query = {};
+
+    if (category) {
+      query.category = category;
+    }
+
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: "i" } },
