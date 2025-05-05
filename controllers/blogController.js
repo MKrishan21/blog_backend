@@ -24,7 +24,7 @@ exports.getAllBlogs = async (req, res) => {
     }
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const blogs = await Blog.find()
+    const blogs = await Blog.find(query)
       .sort({
         createdAt: sort === "asc" ? 1 : -1,
       })
