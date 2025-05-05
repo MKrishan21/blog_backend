@@ -4,7 +4,11 @@ const Blog = require("../models/Blog");
 exports.getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 });
-    res.status(200).json(blogs);
+    res.status(200).json({
+      success: true,
+      data: blogs,
+      message: "Blogs Fetched Successfylly",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -32,13 +36,17 @@ exports.getBlogsByUserId = async (req, res) => {
   try {
     const blogs = await Blog.find({ user: userId }).sort({ createdAt: -1 });
 
-    if (!blogs || blogs.length === 0) {
-      return res.status(404).json({ message: "No blogs found for this user" });
-    }
-
-    res.status(200).json(blogs);
+    res.status(200).json({
+      success: true,
+      message: "Blogs Fetched Successfylly",
+      data: blogs,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch Blogs !",
+      error: error.message,
+    });
   }
 };
 
