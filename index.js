@@ -1,9 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
-const blogRoutes = require("./routes/blogRoutes");
 const app = express();
+const blogRoutes = require("./routes/blogRoutes");
 const useRoutes = require("./routes/userRoutes");
+const likeFavRoutes = require("./routes/likeFavRoutes");
 const cors = require("cors");
 
 // Middleware
@@ -17,8 +18,6 @@ app.use(
 
 // Serve static files from uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-console.log("jsddhusdi", process.env.DB_URL);
 
 mongoose
   .connect(process.env.DB_URL, {
@@ -46,6 +45,8 @@ app.get("/", (req, res) => {
 app.use("/api/blogs", blogRoutes);
 // User Routes
 app.use("/api/auth", useRoutes);
+
+app.use("/api/blogs", likeFavRoutes);
 
 app.listen(8000, () => {
   console.log("server is running on port 8000");

@@ -46,6 +46,8 @@ const blogSchema = new mongoose.Schema({
     ],
     default: "Other",
   },
+  likesCount: { type: Number, default: 0 },
+  favouritesCount: { type: Number, default: 0 },
   status: {
     type: Boolean,
     default: true,
