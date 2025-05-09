@@ -30,43 +30,43 @@ exports.likePost = async (req, res) => {
   }
 };
 
-// exports.favouritePost = async (req, res) => {
-//   const { id } = req.params;
-//   const userId = req.user.id;
+exports.favouritePost = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
 
-//   try {
-//     let record = await LikeFavourite.findOne({ userId, id });
+  try {
+    let record = await LikeFavourite.findOne({ userId, id });
 
-//     if (record) {
-//       if (record.favourited) {
-//         return res.status(400).json({ message: "Already favourited" });
-//       }
-//       record.favourited = true;
-//     } else {
-//       record = new LikeFavourite({ userId, id, favourited: true });
-//     }
+    if (record) {
+      if (record.favourited) {
+        return res.status(400).json({ message: "Already favourited" });
+      }
+      record.favourited = true;
+    } else {
+      record = new LikeFavourite({ userId, id, favourited: true });
+    }
 
-//     await record.save();
-//     await Blog.findByIdAndUpdate(id, { $inc: { favouritesCount: 1 } });
+    await record.save();
+    await Blog.findByIdAndUpdate(id, { $inc: { favouritesCount: 1 } });
 
-//     res.status(200).json({ message: "Post favourited" });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
+    res.status(200).json({ message: "Post favourited" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-// exports.getLikesAndFavourites = async (req, res) => {
-//   const { id } = req.params;
+exports.getUserInteraction = async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.id;
 
-//   try {
-//     const post = await Blog.findById(id).select("likesCount favouritesCount");
-//     res.status(200).json({
-//       success: true,
-//       likes: post.likesCount,
-//       favourites: post.favouritesCount,
-//       message: "Likes and favourites fetched successfully",
-//     });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
+  try {
+    const record = await LikeFavourite.findOne({ userId, postId });
+    res.status(200).json({
+      success: true,
+      liked: record?.liked || false,
+      favourited: record?.favourited || false,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
