@@ -69,8 +69,8 @@ exports.getUserInteraction = async (req, res) => {
     const record = await LikeFavourite.findOne({ userId, postId });
     res.status(200).json({
       success: true,
-      liked: record?.liked,
-      favourited: record?.favourited,
+      liked: record?.liked ?? false,
+      favourited: record?.favourited ?? false,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
