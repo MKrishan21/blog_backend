@@ -62,11 +62,19 @@ exports.favouritePost = async (req, res) => {
 };
 
 exports.getUserInteraction = async (req, res) => {
-  const { id: postId } = req.params;
+  const { postId } = req.params;
   const userId = req.user.id;
 
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+
   try {
+    console.log(userId, postId);
+    
     const record = await LikeFavourite.findOne({ userId, postId });
+    console.log(record);
+    
     res.status(200).json({
       success: true,
       liked: record?.liked ?? false,
