@@ -7,9 +7,9 @@ const LikeFavouriteSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    id: {
+    postId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "Blog",
       required: true,
     },
     liked: { type: Boolean, default: false },

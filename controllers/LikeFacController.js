@@ -2,28 +2,34 @@ const LikeFavourite = require("../models/LikeFav");
 const Blog = require("../models/Blog");
 
 exports.likePost = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id; // From JWT token
+  const { id: postId } = req.params;
+  const userId = req.user.id;
 
   try {
-    let record = await LikeFavourite.findOne({ userId, id });
+    let record = await LikeFavourite.findOne({ userId, postId });
 
     if (record) {
       record.liked = !record.liked;
       await record.save();
 
       const increment = record.liked ? 1 : -1;
-      await Blog.findByIdAndUpdate(id, { $inc: { likesCount: increment } });
+      await Blog.findByIdAndUpdate(postId, { $inc: { likesCount: increment } });
 
       return res.status(200).json({
         message: record.liked ? "Post liked" : "Post unliked",
+        liked: record.liked,
+        favourited: record.favourited,
       });
     } else {
-      record = new LikeFavourite({ userId, id, liked: true });
+      record = new LikeFavourite({ userId, postId, liked: true });
       await record.save();
-      await Blog.findByIdAndUpdate(id, { $inc: { likesCount: 1 } });
+      await Blog.findByIdAndUpdate(postId, { $inc: { likesCount: 1 } });
 
-      return res.status(200).json({ message: "Post liked" });
+      return res.status(200).json({
+        message: "Post liked",
+        liked: true,
+        favourited: false,
+      });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -56,21 +62,17 @@ exports.favouritePost = async (req, res) => {
 };
 
 exports.getUserInteraction = async (req, res) => {
-  const { id } = req.params;
+  const { id: postId } = req.params;
   const userId = req.user.id;
-  console.log("id", id);
 
   try {
-    const record = await LikeFavourite.findOne({ userId, id });
-    console.log("record", record);
-
+    const record = await LikeFavourite.findOne({ userId, postId });
     res.status(200).json({
       success: true,
-      liked: record?.liked || false,
-      favourited: record?.favourited || false,
+      liked: record?.liked,
+      favourited: record?.favourited,
     });
   } catch (err) {
-    console.log("error", err);
     res.status(500).json({ error: err.message });
   }
 };

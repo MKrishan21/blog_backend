@@ -9,6 +9,6 @@ const auth = require("../middleware/authMiddleware");
 
 router.post("/likes/:id", auth, likePost);
 // router.post("/favourits/:id", auth, favouritePost);
-router.get("/likes-favourit/:id", auth, getUserInteraction);
+router.get("/likes-favourit/:postId", auth, getUserInteraction);
 
 module.exports = router;
