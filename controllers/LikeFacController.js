@@ -61,7 +61,7 @@ exports.getUserInteraction = async (req, res) => {
   console.log("id", id);
 
   try {
-    const record = await LikeFavourite.findOne({ userId, postId: id });
+    const record = await LikeFavourite.findOne({ userId, id });
     console.log("record", record);
 
     res.status(200).json({
