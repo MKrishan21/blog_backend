@@ -1,4 +1,5 @@
 const Blog = require("../models/Blog");
+const LikeFav = require("../models/LikeFav");
 
 // Get all blogs
 exports.getAllBlogs = async (req, res) => {
@@ -23,23 +24,25 @@ exports.getAllBlogs = async (req, res) => {
       ];
     }
     const skip = (parseInt(page) - 1) * parseInt(limit);
-
     const blogs = await Blog.find(query)
-    .populate("likefavourites")
       .sort({
         createdAt: sort === "asc" ? 1 : -1,
       })
       .skip(skip)
       .limit(parseInt(limit));
     const total = await Blog.countDocuments(query);
-    const data = blogs.map((blog) => {
+    const data = await Promise.all(
+      blogs.map(async(blog) => {
       let likesCount = 0;
       let favouritesCount = 0;
-      if (blog.likefavourites && blog.likefavourites.length > 0) {
-        likesCount = blog.likefavourites.filter(
+      const likefavourites = await LikeFav.find({
+        postId: blog._id,
+      });
+      if (likefavourites && likefavourites.length > 0) {
+        likesCount = likefavourites.filter(
           (like) => like.liked === true
         ).length;
-        favouritesCount = blog.likefavourites.filter(
+        favouritesCount = likefavourites.filter(
           (fav) => fav.favourited === true
         ).length;
       }
@@ -48,7 +51,7 @@ exports.getAllBlogs = async (req, res) => {
         likesCount,
         favouritesCount,
       };
-    });
+    }));
     res.status(200).json({
       success: true,
       data,
