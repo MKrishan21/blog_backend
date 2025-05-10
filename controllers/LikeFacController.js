@@ -12,8 +12,8 @@ exports.likePost = async (req, res) => {
       record.liked = !record.liked;
       await record.save();
 
-      const increment = record.liked ? 1 : -1;
-      await Blog.findByIdAndUpdate(postId, { $inc: { likesCount: increment } });
+      // const increment = record.liked ? 1 : -1;
+      // await Blog.findByIdAndUpdate(postId, { $inc: { likesCount: increment } });
 
       return res.status(200).json({
         message: record.liked ? "Post liked" : "Post unliked",
@@ -53,7 +53,7 @@ exports.favouritePost = async (req, res) => {
     }
 
     await record.save();
-    await Blog.findByIdAndUpdate(id, { $inc: { favouritesCount: 1 } });
+    // await Blog.findByIdAndUpdate(id, { $inc: { favouritesCount: 1 } });
 
     res.status(200).json({ message: "Post favourited" });
   } catch (err) {

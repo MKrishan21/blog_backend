@@ -25,15 +25,33 @@ exports.getAllBlogs = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const blogs = await Blog.find(query)
+    .populate("likefavourites")
       .sort({
         createdAt: sort === "asc" ? 1 : -1,
       })
       .skip(skip)
       .limit(parseInt(limit));
     const total = await Blog.countDocuments(query);
+    const data = blogs.map((blog) => {
+      let likesCount = 0;
+      let favouritesCount = 0;
+      if (blog.likefavourites && blog.likefavourites.length > 0) {
+        likesCount = blog.likefavourites.filter(
+          (like) => like.liked === true
+        ).length;
+        favouritesCount = blog.likefavourites.filter(
+          (fav) => fav.favourited === true
+        ).length;
+      }
+      return {
+        ...blog.toObject(),
+        likesCount,
+        favouritesCount,
+      };
+    });
     res.status(200).json({
       success: true,
-      data: blogs,
+      data,
       pagination: {
         total,
         page: parseInt(page),

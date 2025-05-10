@@ -4,12 +4,12 @@ const LikeFavouriteSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "users",
       required: true,
     },
     postId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Blog",
+      ref: "blogs",
       required: true,
     },
     liked: { type: Boolean, default: false },
@@ -20,4 +20,4 @@ const LikeFavouriteSchema = new mongoose.Schema(
 
 LikeFavouriteSchema.index({ userId: 1, postId: 1 }, { unique: true });
 
-module.exports = mongoose.model("LikeFavourite", LikeFavouriteSchema);
+module.exports = mongoose.model("likefavourites", LikeFavouriteSchema);

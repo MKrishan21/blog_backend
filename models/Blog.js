@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const blogSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "users",
     required: true,
   },
   title: {
@@ -44,10 +44,8 @@ const blogSchema = new mongoose.Schema({
       "sports",
       "other",
     ],
-    default: "Other",
+    default: "other",
   },
-  likesCount: { type: Number, default: 0 },
-  favouritesCount: { type: Number, default: 0 },
   status: {
     type: Boolean,
     default: true,
@@ -62,4 +60,4 @@ const blogSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Blog", blogSchema);
+module.exports = mongoose.model("blogs", blogSchema);
