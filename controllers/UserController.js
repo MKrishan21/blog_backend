@@ -49,15 +49,16 @@ const login = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
-  const userId = req.params.id;
+const getAllUser = async (req, res) => {
+  
 
   try {
-    const user = await User.findById(userId).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
+    const users = await User.find()
+    res.status(200).json({
+      status:true,
+      message: "User Fetch Successfully",
+      data: users, 
+    })
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -80,6 +81,6 @@ const getUserById = async (req, res) => {
 module.exports = {
   register,
   login,
-  getUser,
+  getAllUser,
   getUserById,
 };
